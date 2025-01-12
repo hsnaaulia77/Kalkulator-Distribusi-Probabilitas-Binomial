@@ -1,0 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+:root {
+    --accent-color: #8672ff;
+    --base-color: white;
+    --text-color: #2e2b41;
+    --input-color: #f3f0ff;
+    --button-hover: #6b5efc;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-family: "Poppins", Segoe UI, sans-serif;
+    font-size: 12pt;
+    color: var(--text-color);
+    text-align: center;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--base-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 90%;
+    max-width: 600px;
+    margin: 20px auto;
+    background: var(--input-color);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 1.8rem;
+    color: var(--accent-color);
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+a {
+    text-decoration: none;
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+a:hover {
+    color: var(--button-hover);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+input[type="number"] {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid var(--accent-color);
+    border-radius: 5px;
+    background-color: var(--base-color);
+    transition: 0.3s;
+}
+
+input[type="number"]:focus {
+    outline: none;
+    border-color: var(--button-hover);
+    box-shadow: 0 0 3px var(--button-hover);
+}
+
+button {
+    padding: 10px;
+    font-size: 1rem;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: var(--button-hover);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.result {
+    padding: 10px;
+    font-size: 1.1rem;
+    color: white;
+    background-color: var(--accent-color);
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+canvas {
+    margin: 20px 0;
+    max-width: 100%;
+    height: auto;
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    p {
+        font-size: 0.9rem;
+    }
+
+    button {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    label {
+        font-size: 0.8rem;
+    }
+}

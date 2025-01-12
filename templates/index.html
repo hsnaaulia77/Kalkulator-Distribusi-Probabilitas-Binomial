@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Distribusi Probabilitas Binomial</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Kalkulator Distribusi Probabilitas Binomial</h1>
+        <p><strong>Hitung Probabilitas Binomial:</strong></p>
+        <p>
+            Coba contoh-contoh berikut:
+            <a href="#" onclick="fillExample(10, 0.5, 5)">[Contoh 1]</a>
+            <a href="#" onclick="fillExample(20, 0.3, 6)">[Contoh 2]</a>
+            <a href="#" onclick="fillExample(15, 0.7, 10)">[Contoh 3]</a>
+        </p>
+
+        <form method="POST" onsubmit="updateChart(); return false;">
+            <label for="n">Jumlah Percobaan <i>n</i>:</label>
+            <input type="number" id="n" name="n" value="{{ n or '' }}" required>
+
+            <label for="p">Probabilitas Keberhasilan <i>p</i>:</label>
+            <input type="number" id="p" name="p" step="0.01" value="{{ p or '' }}" required>
+
+            <label for="k">Jumlah Keberhasilan <i>k</i>:</label>
+            <input type="number" id="k" name="k" value="{{ k or '' }}" required>
+
+            <button type="submit">Hitung Probabilitas</button>
+        </form>
+
+        {% if prob is not none %}
+        <div class="result">
+            <p><strong>Probabilitas P(k={{ k }}) = {{ prob }}</strong></p>
+        </div>
+        {% endif %}
+
+        {% if cdf is not none %}
+        <div class="result">
+            <p><strong>Probabilitas Kumulatif F(k≤{{ k }}) = {{ cdf }}</strong></p>
+        </div>
+        {% endif %}
+
+        <canvas id="binomialChart" width="400" height="200"></canvas>
+
+        <p><a href="#">Embed Kalkulator Distribusi Probabilitas Binomial Widget</a></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let currentChart = null;
+
+        // Mengisi contoh nilai ke input
+        function fillExample(n, p, k) {
+            document.getElementById('n').value = n;
+            document.getElementById('p').value = p;
+            document.getElementById('k').value = k;
+        }
+
+        // Memperbarui grafik berdasarkan input pengguna
+        function updateChart() {
+            const n = parseInt(document.getElementById('n').value);
+            const p = parseFloat(document.getElementById('p').value);
+
+            if (isNaN(n) || isNaN(p) || p < 0 || p > 1 || n < 0) {
+                alert("Masukkan nilai n dan p yang valid.");
+                return;
+            }
+
+            drawChart(n, p);
+        }
+
+        // Menghitung distribusi binomial dan CDF
+        function calculateBinomialAndCDF(n, p) {
+            const data = [];
+            const cdf = [];
+            const labels = [];
+            let cumulativeSum = 0;
+
+            for (let k = 0; k <= n; k++) {
+                const prob = binomialProbability(n, k, p);
+                cumulativeSum += prob;
+                labels.push(k);
+                data.push(prob);
+                cdf.push(cumulativeSum);
+            }
+            return { labels, data, cdf };
+        }
+
+        // Menghitung probabilitas binomial
+        function binomialProbability(n, k, p) {
+            return combination(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+        }
+
+        // Fungsi kombinasi (nCk)
+        function combination(n, k) {
+            if (k > n) return 0;
+            let result = 1;
+            for (let i = 1; i <= k; i++) {
+                result *= (n - i + 1) / i;
+            }
+            return result;
+        }
+
+        // Menggambar grafik
+        function drawChart(n, p) {
+            const { labels, data, cdf } = calculateBinomialAndCDF(n, p);
+
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            const ctx = document.getElementById('binomialChart').getContext('2d');
+            currentChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: `Distribusi Binomial (n=${n}, p=${p})`,
+                            data: data,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1,
+                        },
+                        {
+                            label: 'CDF (Kumulatif)',
+                            data: cdf,
+                            type: 'line',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            tension: 0.4,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Probabilitas',
+                            },
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Jumlah Keberhasilan (k)',
+                            },
+                        },
+                    },
+                },
+            });
+        }
+
+        // Gambar grafik default
+        drawChart(10, 0.5);
+    </script>
+</body>
+</html>
